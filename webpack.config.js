@@ -2,8 +2,7 @@
 
 const path = require('path');
 const args = require('minimist')(process.argv.slice(2));
-console.log(args);
-console.log(args._);
+
 // List of allowed environments
 const allowedEnvs = ['dev', 'dist', 'test'];
 
