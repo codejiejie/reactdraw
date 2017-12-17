@@ -15,7 +15,7 @@ imageDatas=function getImageURL(imageDatasArr) {
     return imageDatasArr;
 }(imageDatas);
 
-// console.log(imageDatas);
+console.log(imageDatas);
 //用来计算位置区间内的一个随机值
 function getRangeRandom(low,high){
     return Math.floor(Math.random() * (high-low) + low);
