@@ -25,7 +25,37 @@ function get30DegRandom() {
     return ((Math.random()>0.5 ? "" : "-") + Math.floor(Math.random() * 30));
 }
 
-
+//构建控制组件
+class ControllerUnit extends React.Component{
+    constructor(){
+        super()
+        this.handleClick=this.handleClick.bind(this);
+    }
+    handleClick(e){
+        //点击的当前图片正在选中的状态就反转图片 否则将对应图片居中
+        if(this.props.arrange.isCenter){
+            this.props.inverse();
+        }else{
+            this.props.center();
+        }
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    render(){
+        let controllerUnitClassName="controller-unit";
+        //如果对应的是居中的图片，显示控制按钮的居中态
+        if(this.props.arrange.isCenter){
+            controllerUnitClassName += " is-center";
+            //如果同时对应的是反转图片  显示控制按钮的反转态
+            if(this.props.arrange.isInverse){
+                controllerUnitClassName += " is-inverse";
+            }
+        }
+        return(
+            <span className={controllerUnitClassName} onClick={this.handleClick}></span>
+        )
+    }
+}
 //构建图片组件
 //figure自包含的单个单元内容   单个照片
 class ImgFigure extends React.Component {
@@ -56,8 +86,8 @@ class ImgFigure extends React.Component {
 
         //如果图片的旋转角度有值并且不为0，添加旋转角度
         if(this.props.arrange.rotate){
-            (['-moz-','-ms-','-webkit-','']).forEach(function (val) {
-                styleObj[val+'transform']="rotate("+this.props.arrange.rotate+"deg)";
+            (['MozTransform','msTransform','WebkitTransform','transform']).forEach(function (val) {
+                styleObj[val]="rotate("+this.props.arrange.rotate+"deg)";
             }.bind(this));
 
         }
@@ -74,12 +104,13 @@ class ImgFigure extends React.Component {
                 <img src={this.props.data.imageURL} alt={this.props.data.title} />
                 <figcaption>
                     <h2 className="img-title">{this.props.data.title}</h2>
-                    <div className="img-back" onClick={this.handleClick}>
-                        <p>
-                            {this.props.data.desc}
-                        </p>
-                    </div>
+
                 </figcaption>
+                <div className="img-back" onClick={this.handleClick}>
+                    <p>
+                        {this.props.data.desc}
+                    </p>
+                </div>
             </figure>
         )
     }
@@ -173,7 +204,7 @@ class AppComponent extends React.Component {
             pos:centerPos,
             rotate:0,
             isCenter:true
-        }
+        };
 
 
 
@@ -287,7 +318,7 @@ class AppComponent extends React.Component {
 
     render() {
         let controllerUnits=[];
-        var imgFigures=[];
+        let imgFigures=[];
         imageDatas.forEach(function (value,index) {
             if(!this.state.imgsArrangeArr[index]){
                 this.state.imgsArrangeArr[index]={
@@ -300,9 +331,15 @@ class AppComponent extends React.Component {
                     isCenter:false
                 }
             }
-            imgFigures.push(<ImgFigure data={value} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
-
+            //图画组件
+            imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+            //控制组件
+            controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
         }.bind(this));
+
+
+
+
 
         return (
             <section className="stage" ref="stage">
