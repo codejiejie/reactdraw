@@ -63,7 +63,7 @@ function getDefaultModules() {   //定义影响各个module的选项  loaders �
 
 module.exports = {
   srcPath: srcPath,
-  publicPath: '/assets/',
+  publicPath: 'assets/',
   port: dfltPort,
   getDefaultModules: getDefaultModules
 };
